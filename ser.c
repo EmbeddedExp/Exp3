@@ -19,7 +19,7 @@ int SerConfig(int fd, int baudrate, int dataBits, int stopBits, char parity){
 
     newCfg = oldCfg;
 
-    newCfg.c_cflag |= (CLOCSL| CREAD);
+    newCfg.c_cflag |= (CLOCAL| CREAD);
     newCfg.c_cflag &= !CRTSCTS;
 
     newCfg.c_cflag &= !CSIZE;
@@ -27,7 +27,7 @@ int SerConfig(int fd, int baudrate, int dataBits, int stopBits, char parity){
 
     newCfg.c_oflag = 0;
     newCfg.c_lflag = 0;
-    newCfg.c_iflag =&= ~(BRKINT | INPCK | ISTRIP | ICRNL | IXON);
+    newCfg.c_iflag &= ~(BRKINT | INPCK | ISTRIP | ICRNL | IXON);
 
 
     switch (baudrate) {
@@ -57,14 +57,14 @@ int SerConfig(int fd, int baudrate, int dataBits, int stopBits, char parity){
             break;
         case 'o':
         case 'O':
-            newCfg.c_cflag |= (PAROOD| PARENB);
+            newCfg.c_cflag |= (PARODD| PARENB);
             newCfg.c_iflag |= INPCK;
             break;
         case 'e':
         case 'E':
             newCfg.c_cflag |= PARENB;
-            newCfg.c_cflag &= ~PAROOD;
-            newCfg.c_iflag = INPCk;
+            newCfg.c_cflag &= ~PARODD;
+            newCfg.c_iflag |= INPCK;
             break;
         case 's':
         case 'S':
@@ -103,7 +103,7 @@ int SerConfig(int fd, int baudrate, int dataBits, int stopBits, char parity){
 
 int32_t SerInit(char *devname, int baudrate) {
     // struct termios tio;
-    int 32_t serFd;
+    int32_t serFd;
 
     serFd = open(devname, O_RDWR | O_NOCTTY | O_NDELAY);
 
